@@ -1,4 +1,4 @@
-# Video Game Sales Dataset
+#  Анализ продаж видеоигр
 **Источник:** [Kaggle](https://www.kaggle.com/datasets/volodymyrpivoshenko/video-game-sales-dataset)
 **Дата загрузки:** 19.01.2026
 
