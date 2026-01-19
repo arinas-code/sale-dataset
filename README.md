@@ -1,4 +1,4 @@
-# 🎮 Анализ продаж видеоигр: сложные SQL-запросы
+# 🎮 Анализ продаж видеоигр
 
 ## 📊 О датасете
 **Источник:** [Video Game Sales Dataset](https://www.kaggle.com/datasets/volodymyrpivoshenko/video-game-sales-dataset)  
