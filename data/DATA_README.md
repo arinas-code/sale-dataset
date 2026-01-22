@@ -21,15 +21,15 @@ create Table platforms (
   platform_name varchar(50) not null
 );
 --Создание таблицы с играми
-create Table games (
-  game_id integer primary key,
-  name varchar(500) not null,
-  global_rank integer,
-  release_year integer,
-  publisher_id integer,
-  genre_id integer,
-  FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id),
-  FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
+CREATE TABLE games (
+    game_id INTEGER PRIMARY KEY,
+    name VARCHAR(500) NOT NULL,
+    global_rank INTEGER,
+    release_year INTEGER NULL,
+    publisher_id INTEGER,
+    genre_id INTEGER,
+    FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id),
+    FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 --Создание связующей таблицы M:M (игры ↔ платформы)
 create Table game_platforms (
