@@ -33,11 +33,11 @@ CREATE TABLE games (
 );
 --Создание связующей таблицы M:M (игры ↔ платформы)
 CREATE TABLE game_platforms (
-    game_id INTEGER,
-    platform_id INTEGER, 
+    game_id INTEGER NOT NULL,
+    platform_id INTEGER NOT NULL,
+    PRIMARY KEY (game_id, platform_id),
     FOREIGN KEY (game_id) REFERENCES games(game_id),
-    FOREIGN KEY (platform_id) REFERENCES platforms(platform_id),
-    PRIMARY KEY (game_id, platform_id)
+    FOREIGN KEY (platform_id) REFERENCES platforms(platform_id)
 );
 --Создание таблицы с продажами
 create Table sales (
