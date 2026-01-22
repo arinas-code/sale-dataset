@@ -3,70 +3,49 @@
 **Дата загрузки:** 19.01.2026
 
 ## Изменения, внесённые в данные:
-1. Разделила датасет на несколько таблиц
-
--- Создание таблицы издателей
+1. Разделила датасет на 6 таблиц
 ```
-CREATE TABLE publishers (
-    publisher_id SERIAL PRIMARY KEY,
-    publisher_name VARCHAR(255) NOT NULL UNIQUE
+--Создание таблицы издателей
+create table publishers (
+  publisher_id integer PRIMARY KEY,
+  publisher_name varchar(255) not null
+);
+--Создание таблицы жанров
+create Table genres (
+  genre_id integer primary key,
+  genre_name varchar(100) not null
+);
+--Создание таблицы с платформами
+create Table platforms (
+  platform_id integer primary key,
+  platform_name varchar(50) not null
+);
+--Создание таблицы с играми
+create Table games (
+  game_id integer primary key,
+  name varchar(500) not null,
+  global_rank integer,
+  release_year integer,
+  publisher_id integer,
+  genre_id integer,
+  FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id),
+  FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
+);
+--Создание связующей таблицы M:M (игры ↔ платформы)
+create Table game_platforms (
+  game_id integer,
+  platform_id integer,
+  FOREIGN KEY (game_id) REFERENCES games(game_id),
+  FOREIGN KEY (platform_id) REFERENCES platforms(platform_id),
+  PRIMARY KEY (game_id, platform_id)
+);
+--Создание таблицы с продажами
+create Table sales (
+  game_id integer,
+  na_sales decimal(10,2),
+  eu_sales decimal(10,2),
+  jp_sales decimal(10,2),
+  other_sales decimal(10,2),
+  FOREIGN KEY (game_id) REFERENCES games(game_id)
 )
-```
--- Создание таблицы жанров
-```
-CREATE TABLE genres (
-    genre_id SERIAL PRIMARY KEY,
-    genre_name VARCHAR(100) NOT NULL UNIQUE
-)
-```
--- Создание таблицы платформ
-```
-CREATE TABLE platforms (
-    platform_id SERIAL PRIMARY KEY,
-    platform_name VARCHAR(50) NOT NULL UNIQUE
-)
-```
-
--- Создание таблицы игр
-```
-CREATE TABLE games (
-    game_id SERIAL PRIMARY KEY,
-    name VARCHAR(500) NOT NULL,
-    global_rank INTEGER,
-    release_year INTEGER CHECK (release_year >= 1980 AND release_year <= EXTRACT(YEAR FROM CURRENT_DATE)),
-    publisher_id INTEGER NOT NULL,
-    genre_id INTEGER NOT NULL,
-    FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id) ON DELETE RESTRICT,
-    FOREIGN KEY (genre_id) REFERENCES genres(genre_id) ON DELETE RESTRICT
-)
-```
--- Связующая таблица для связи M:M (игры ↔ платформы)
-```
-CREATE TABLE game_platforms (
-    game_id INTEGER NOT NULL,
-    platform_id INTEGER NOT NULL,
-    PRIMARY KEY (game_id, platform_id),
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
-    FOREIGN KEY (platform_id) REFERENCES platforms(platform_id) ON DELETE CASCADE
-)
-```
-
--- Таблица продаж
-```
-CREATE TABLE sales (
-    game_id INTEGER PRIMARY KEY,
-    na_sales DECIMAL(10,2) DEFAULT 0.00 CHECK (na_sales >= 0),
-    eu_sales DECIMAL(10,2) DEFAULT 0.00 CHECK (eu_sales >= 0),
-    jp_sales DECIMAL(10,2) DEFAULT 0.00 CHECK (jp_sales >= 0),
-    other_sales DECIMAL(10,2) DEFAULT 0.00 CHECK (other_sales >= 0),
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
-)
-```
-
--- Индексы для оптимизации запросов
-```
-CREATE INDEX idx_games_year ON games(release_year);
-CREATE INDEX idx_games_publisher ON games(publisher_id);
-CREATE INDEX idx_sales_na ON sales(na_sales DESC);
-CREATE INDEX idx_sales_eu ON sales(eu_sales DESC);
 ```
