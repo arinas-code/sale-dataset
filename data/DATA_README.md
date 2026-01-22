@@ -32,12 +32,12 @@ CREATE TABLE games (
     FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 --Создание связующей таблицы M:M (игры ↔ платформы)
-create Table game_platforms (
-  game_id integer,
-  platform_id integer,
-  FOREIGN KEY (game_id) REFERENCES games(game_id),
-  FOREIGN KEY (platform_id) REFERENCES platforms(platform_id),
-  PRIMARY KEY (game_id, platform_id)
+CREATE TABLE game_platforms (
+    game_id INTEGER,
+    platform_id INTEGER, 
+    FOREIGN KEY (game_id) REFERENCES games(game_id),
+    FOREIGN KEY (platform_id) REFERENCES platforms(platform_id),
+    PRIMARY KEY (game_id, platform_id)
 );
 --Создание таблицы с продажами
 create Table sales (
