@@ -3,7 +3,54 @@
 **Дата загрузки:** 19.01.2026
 
 ## Изменения, внесённые в данные:
-1. Разделила датасет на 6 таблиц
+1. Создала диаграмму со связями в dbdiagram.io
+```
+Table publishers {
+  publisher_id integer [primary key]
+  publisher_name varchar(255)
+}
+
+Table genres {
+  genre_id integer [primary key]
+  genre_name varchar(100)
+}
+
+Table platforms {
+  platform_id integer [primary key]
+  platform_name varchar(50)
+}
+
+Table games {
+  game_id integer [primary key]
+  name varchar(500)
+  global_rank integer
+  platform varchar(50)
+  release_year integer
+  genre varchar(100)
+  publisher varchar(255)
+  publisher_id integer
+  genre_id integer
+}
+
+Table game_platforms {
+  game_id integer [primary key]
+  platform_ids integer[]
+}
+
+Table sales {
+  game_id integer [primary key]
+  na_sales decimal(10,2)
+  eu_sales decimal(10,2)
+  jp_sales decimal(10,2)
+  other_sales decimal(10,2)
+}
+
+Ref: games.publisher_id > publishers.publisher_id
+Ref: games.genre_id > genres.genre_id
+Ref: game_platforms.game_id > games.game_id
+Ref: sales.game_id > games.game_id
+```
+2. Создала 6 таблиц в pgAdmin
 ```
 --Создание таблицы издателей
 create table publishers (
@@ -47,7 +94,7 @@ create Table sales (
   FOREIGN KEY (game_id) REFERENCES games(game_id)
 )
 ```
-2. Создала 6 разных csv файлов с помощью кода на Python. Также в таблице game_platforms сделала массив для столбца platform_id
+3. Создала 6 разных csv файлов с помощью кода на Python. Также в таблице game_platforms сделала массив для столбца platform_id
 
 ```
 import pandas as pd
@@ -125,3 +172,6 @@ def normalize_data(input_file='video_game_sales.csv'):
 
 normalize_data()
 ```
+4. Импортировала данные в созданные таблицы в pgAdmin.
+```
+3. 
