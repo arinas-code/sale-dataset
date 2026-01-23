@@ -47,3 +47,81 @@ create Table sales (
   FOREIGN KEY (game_id) REFERENCES games(game_id)
 )
 ```
+2. Создала 6 разных csv файлов с помощью кода на Python. Также в таблице game_platforms сделала массив для столбца platform_id
+
+```
+import pandas as pd
+
+def normalize_data(input_file='video_game_sales.csv'):
+    df = pd.read_csv(input_file)
+    
+    # 1. Создаю файл  publishers
+    publishers = df[['Publisher']].dropna().drop_duplicates().reset_index(drop=True)
+    publishers['publisher_id'] = range(1, len(publishers) + 1)
+    publishers.columns = ['publisher_name', 'publisher_id']
+    publishers.to_csv('publishers.csv', index=False)
+    
+    # 2. Создаю файл genres
+    genres = df[['Genre']].dropna().drop_duplicates().reset_index(drop=True)
+    genres['genre_id'] = range(1, len(genres) + 1)
+    genres.columns = ['genre_name', 'genre_id']
+    genres.to_csv('genres.csv', index=False)
+    print(f"genres.csv: {len(genres)} строк")
+    
+    # 3. Создаю файл platforms
+    platforms = df[['Platform']].dropna().drop_duplicates().reset_index(drop=True)
+    platforms['platform_id'] = range(1, len(platforms) + 1)
+    platforms.columns = ['platform_name', 'platform_id']
+    platforms.to_csv('platforms.csv', index=False)
+    print(f"platforms.csv: {len(platforms)} строк")
+    
+    # 4. Создаю файл games
+    games = df.copy()
+    games['game_id'] = range(1, len(games) + 1)
+    
+    # Добавляю publisher_id и genre_id
+    publisher_dict = dict(zip(publishers['publisher_name'], publishers['publisher_id']))
+    genre_dict = dict(zip(genres['genre_name'], genres['genre_id']))
+    
+    games['publisher_id'] = games['Publisher'].map(publisher_dict)
+    games['genre_id'] = games['Genre'].map(genre_dict)
+    
+    # Переименовываю колонки
+    games = games[['game_id', 'Name', 'Rank', 'Platform', 'Year', 'Genre', 
+                   'Publisher', 'publisher_id', 'genre_id']]
+    games.columns = ['game_id', 'name', 'global_rank', 'platform', 'release_year', 
+                     'genre', 'publisher', 'publisher_id', 'genre_id']
+    
+    games.to_csv('games.csv', index=False)
+    print(f"games.csv: {len(games)} строк")
+    
+    # 5. Создаю файл game_platforms
+    platform_dict = dict(zip(platforms['platform_name'], platforms['platform_id']))
+    
+    # ВРЕМЕННО добавляю platform_id в games для группировки
+    games_with_platform = games.copy()
+    games_with_platform['platform_id'] = games_with_platform['platform'].map(platform_dict)
+    
+    game_platforms = games_with_platform.groupby('game_id')['platform_id'].apply(
+        lambda x: '{' + ','.join(map(str, sorted(set(x)))) + '}'
+    ).reset_index()
+    
+    game_platforms.to_csv('game_platforms.csv', index=False)
+    print(f"game_platforms.csv: {len(game_platforms)} строк")
+    
+    # 6. Создаю файл sales 
+    sales = pd.DataFrame({
+        'game_id': games['game_id'],
+        'na_sales': df['NA_Sales'],
+        'eu_sales': df['EU_Sales'],
+        'jp_sales': df['JP_Sales'],
+        'other_sales': df['Other_Sales']
+    })
+    
+    sales.to_csv('sales.csv', index=False)
+    print(f"sales.csv: {len(sales)} строк")
+    
+    print("\nГотово! 6 таблиц создано.")
+
+normalize_data()
+```
