@@ -173,5 +173,3 @@ def normalize_data(input_file='video_game_sales.csv'):
 normalize_data()
 ```
 4. Импортировала данные в созданные таблицы в pgAdmin.
-```
-3. 
