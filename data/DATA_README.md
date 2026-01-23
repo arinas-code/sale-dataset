@@ -48,6 +48,7 @@ Table sales {
 Ref: games.publisher_id > publishers.publisher_id
 Ref: games.genre_id > genres.genre_id
 Ref: game_platforms.game_id > games.game_id
+Ref: game_platforms.platform_ids > platforms.platform_id
 Ref: sales.game_id > games.game_id
 ```
 2. Создала 6 таблиц в pgAdmin
